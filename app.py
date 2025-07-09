@@ -7,7 +7,7 @@ products = [
     {"id": 1, "name": "Laptop", "price": 999},
     {"id": 2, "name": "Mouse", "price": 25},
     {"id": 3, "name": "Keyboard", "price": 45}
-    
+
 ]
 
 # Route: GET all products
@@ -39,6 +39,27 @@ def add_product():
     }
     products.append(new_product)
     return jsonify(new_product), 201
+
+
+
+@app.route("/products/<int:product_id>", methods=["PUT"])
+def update_product(product_id):
+    product = next((p for p in products if p["id"] == product_id), None)
+    if not product:
+        return jsonify({"error": "Product not found"}), 404
+
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "No data provided"}), 400
+
+    # Update only if keys exist in data
+    if "name" in data:
+        product["name"] = data["name"]
+    if "price" in data:
+        product["price"] = data["price"]
+
+    return jsonify(product), 200
+
 
 if __name__ == "__main__":
     app.run(debug=True)
