@@ -61,5 +61,15 @@ def update_product(product_id):
     return jsonify(product), 200
 
 
+@app.route("/products/<int:product_id>", methods=["DELETE"])
+def delete_product(product_id):
+    product = next((p for p in products if p["id"] == product_id), None)
+    if not product:
+        return jsonify({"error": "Product not found"}), 404
+
+    products.remove(product)
+    return jsonify({"message": "Product deleted"}), 200
+
+
 if __name__ == "__main__":
     app.run(debug=True)
